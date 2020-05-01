@@ -1,0 +1,6 @@
+list_node* copy_helper(const list_node* & orig, list_node* current = NULL,
+                        list_node* prev = NULL)
+if (!orig)
+  return NULL;
+
+return new node(prev, orig->data, copy_helper(orig->next));

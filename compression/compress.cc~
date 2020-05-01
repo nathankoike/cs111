@@ -1,0 +1,204 @@
+/******************************************************************************
+ *
+ * Name:        YOUR NAME HERE
+ *
+ * Date:        DATE IT'S DONE
+ *
+ * Assignment:	
+ *
+ * Description:
+ *
+ ******************************************************************************/
+
+
+/* Here is a long block comment with some guidance on what functions you'll
+   need.  Delete before submitting. 
+----------------------------------------------------------------------------
+
+--> a function that reads the entire contents of a file and determines its 
+size and
+ counts the frequencies of
+all characters
+
+--> a function that creates a byte from a string containing eight '1' or '0'
+ characters (a bit-string)
+--> a function that creates a bit-string from a byte
+
+--> a function that takes a bit-string of arbitrary length, buffers the bits 
+into blocks 
+of 8, and outputs the
+binary encoding of a character
+
+--> a function that reads a single “bit” from a file (using buffering)
+
+--> a function that builds a single Huffman tree from a queue of Huffman trees
+
+--> a function that builds an array of string encodings from a Huffman tree
+
+--> a function that reads all uncompressed characters from a file and 
+generates 
+compressed character output
+
+--> a function that outputs the character representation of a Huffman tree
+
+--> a function that creates a Huffman tree by reading a character
+representation
+of the tree
+
+--> a function that uncompresses a stream of characters using a Huffman tree
+
+--> a function that determines if the program has been invoked correctly and 
+determines whether to compress
+or uncompress  : DONE FOR YOU!
+
+ *****************************************************************************/
+
+#include <iostream>
+#include <fstream>
+#include <cstdlib>
+
+#include "pq.h"
+
+struct HuffmanTree {
+  unsigned char value;
+  size_t count;
+  HuffmanTree *left;
+  HuffmanTree *right;
+  HuffmanTree(unsigned char value, size_t count,
+	      HuffmanTree *left=NULL, HuffmanTree *right=NULL) :
+    value(value), count(count), left(left), right(right) {}
+};
+
+
+int huffman_tree_cmp(HuffmanTree * const & a, HuffmanTree * const & b)
+{
+  if (a->count == b->count) return 0;
+  return a->count < b->count?-1:1;
+}
+
+using namespace std;
+
+bool show_bits = true;   // might be useful for debugging
+
+unsigned char bits_to_byte(string bitstr) {
+  // Written in class on Friday 4/13
+  unsigned char total = 0;
+  size_t i;
+  int p;
+  for (i = 0, p=128; i < 8; i++, p /= 2)
+    if (bitstr[i] == '1')
+      total += p;    
+  return total;
+}
+
+void get_counts(size_t * counts, size_t & size, istream & in)
+{
+  // POST:  all characters read from in.
+  //        counts[k] = the number of occurrences of k in the istream.
+  //        size is the number of characters read
+}
+
+HuffmanTree * make_tree(size_t * counts)
+{
+  priority_queue<HuffmanTree *> queue(huffman_tree_cmp);
+  // Finish.
+  // 1. make leaves and insert in priority queue
+  // 2. Implement tree-building algorithm removing two
+  //    trees, combining and reinserting until queue size
+  //    is 1.
+
+  // Write code here.
+  
+  // 3. Remove and return the resulting tree.
+  HuffmanTree *result = queue.front();
+  queue.remove();
+  return result;
+}
+
+void make_codes(HuffmanTree *tree, string *codes, string code="")
+{
+  // codes is an array of 256 strings, initially empty.
+  // code is the path so far.
+  // You implement:
+  // Traverse the tree.
+  // code is the path so far.
+  // Basic idea:
+  // if at a leaf, store path in codes corresponding to value
+  // otherwise, recursive call left and right, with updates to code.
+
+}
+
+void write_tree(HuffmanTree * tree, ostream & ostr)
+{
+  // To be implemented:
+  // sample output:  ILaILbLc
+
+}
+
+HuffmanTree * read_tree(istream & istr)
+{
+  // To be implemented.
+  // Inverse of write_tree
+  return NULL;
+
+}
+
+void compress(char *filename)
+{
+  ifstream in(filename);
+  size_t counts[256] = { }; // initializes all to zero.
+  size_t file_size;
+  get_counts(counts, file_size, in);
+  in.close();
+
+  if (file_size == 0)
+    return;
+
+  HuffmanTree * tree = make_tree(counts);
+
+  string codes[256];
+  make_codes(tree, codes);
+
+  cout << file_size;
+  write_tree(tree, cout);
+  // Second pass through the input....
+  /*  in.open(filename);    
+      write_compress(in, codes, cout); */
+}
+
+void uncompress()
+{
+  if (cin.peek() == EOF)
+    return;
+  size_t file_size;
+  cin >> file_size;
+  HuffmanTree *tree = read_tree(cin);
+  // FINISH
+}
+
+/* DON'T MODIFY BELOW */
+
+bool ends_with(const string & str, const string & suffix)
+{
+  return str.size() >= suffix.size() and 
+    str.substr(str.size()-suffix.size()) == suffix;
+}
+
+bool is_compress(const string & command) 
+{
+  return ends_with(command, "compress") and 
+    not ends_with(command, "uncompress");
+}
+
+int main(int argc, char **argv)
+{
+  if (is_compress(argv[0]))
+    if (string(argv[1])=="-b") {
+      show_bits = true;
+      compress(argv[2]);
+    }
+    else
+      compress(argv[1]);
+  else
+    uncompress();
+}

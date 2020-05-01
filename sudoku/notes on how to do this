@@ -1,0 +1,5 @@
+x / 3 * 3
+^makes sets of 3 so i know which row grouping and column grouping to use
+^^find a way to use this
+^if r_group == 0 search rows 0, 1, 2 \
+ etc.

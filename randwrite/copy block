@@ -1,0 +1,12 @@
+#include "set.h"
+
+set::set()
+{
+  _size = 0;
+}
+
+void set::append(const set_element & item)
+{
+  _data[_size] = item;
+  _size++;
+}
